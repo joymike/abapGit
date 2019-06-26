@@ -29,17 +29,21 @@ INTERFACE zif_abapgit_repo_srv
       zcx_abapgit_exception .
   METHODS new_offline
     IMPORTING
-      !iv_url        TYPE string
-      !iv_package    TYPE devclass
+      !iv_url         TYPE string
+      !iv_package     TYPE devclass
+      iv_folder_logic TYPE string DEFAULT zif_abapgit_dot_abapgit=>c_folder_logic-full
     RETURNING
-      VALUE(ro_repo) TYPE REF TO zcl_abapgit_repo_offline
+      VALUE(ro_repo)  TYPE REF TO zcl_abapgit_repo_offline
     RAISING
       zcx_abapgit_exception .
   METHODS new_online
     IMPORTING
-      !iv_url         TYPE string
-      !iv_branch_name TYPE string
-      !iv_package     TYPE devclass
+      !iv_url          TYPE string
+      !iv_branch_name  TYPE string
+      iv_display_name  TYPE string OPTIONAL
+      !iv_package      TYPE devclass
+      !iv_folder_logic TYPE string DEFAULT 'PREFIX'
+      !iv_ign_subpkg   TYPE abap_bool DEFAULT abap_false
     RETURNING
       VALUE(ro_repo)  TYPE REF TO zcl_abapgit_repo_online
     RAISING
@@ -52,7 +56,8 @@ INTERFACE zif_abapgit_repo_srv
       zcx_abapgit_exception .
   METHODS validate_package
     IMPORTING
-      !iv_package TYPE devclass
+      !iv_package    TYPE devclass
+      !iv_ign_subpkg TYPE abap_bool DEFAULT abap_false
     RAISING
       zcx_abapgit_exception .
 ENDINTERFACE.

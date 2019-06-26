@@ -1,95 +1,171 @@
 {
   "global": {
     "version": "v702",
-    "skipGeneratedGatewayClasses": true
+    "skipGeneratedGatewayClasses": true,
+    "skipGeneratedPersistentClasses": true,
+    "skipGeneratedFunctionGroups": true,
+    "applyUnspecifiedRules": false
   },
   "rules": {
     "7bit_ascii": {
-      "enabled": true
+      "enabled": true,
+      "exclude": []
     },
+    "avoid_use": {
+      "enabled": true,
+      "exclude": [],
+      "define": false,
+      "endselect": true,
+      "execSQL": true,
+      "kernelCall": true
+    },
+    "breakpoint": {
+      "enabled": true,
+      "exclude": []
+    },
+    "check_variables": {
+      "enabled": false,
+      "exclude": []
+    },
+    "class_attribute_names": {
+      "enabled": true,
+      "exclude": [],
+      "ignoreExceptions": true,
+      "statics": "^G._.*$",
+      "instance": "^M._.*$"
+    },
+    "cloud_types": {
+      "enabled": true,
+      "exclude": []
+    },
+    "colon_missing_space": {
+      "enabled": true,
+      "exclude": []
+    },
+    "commented_code": {
+      "enabled": true,
+      "exclude": []
+    },
+    "constructor_visibility_public": {
+      "enabled": true,
+      "exclude": []
+    },    
     "contains_tab": {
-      "enabled": true
+      "enabled": true,
+      "exclude": []
+    },
+    "definitions_top": {
+      "enabled": true,
+      "exclude": []
+    },
+    "description_empty": {
+      "enabled": true,
+      "exclude": []
+    },
+    "double_space": {
+      "enabled": true,
+      "exclude": []
+    },
+    "empty_line_in_statement": {
+      "enabled": true,
+      "exclude": [],
+      "allowChained": true
+    },
+    "empty_loop": {
+      "enabled": true,
+      "exclude": [],
+      "length": 120
+    },
+    "empty_statement": {
+      "enabled": true,
+      "exclude": []
+    },
+    "exit_or_check": {
+      "enabled": true,
+      "exclude": []
+    },
+    "exporting": {
+      "enabled": true,
+      "exclude": []
     },
     "functional_writing": {
       "enabled": true,
+      "exclude": [],
       "ignoreExceptions": true
     },
-    "line_length": {
+    "global_class": {
       "enabled": true,
-      "length": 120
+      "exclude": []
     },
-    "max_one_statement": {
-      "enabled": true
-    },
-    "parser_error": {
-      "enabled": true
-    },
-    "space_before_colon": {
-      "enabled": true
-    },
-    "colon_missing_space": {
-      "enabled": true
-    },
-    "exit_or_check": {
-      "enabled": true
-    },
-    "line_only_punc": {
+    "identical_form_names": {
       "enabled": true,
-      "ignoreExceptions": true
+      "exclude": []
     },
-    "obsolete_statement": {
+    "if_in_if": {
       "enabled": true,
-      "refresh": true,
-      "compute": true,
-      "add": true,
-      "subtract": true,
-      "multiply": true,
-      "move": true,
-      "divide": true,
-      "requested": true
+      "exclude": []
     },
-    "start_at_tab": {
-      "enabled": true
-    },
-    "whitespace_end": {
-      "enabled": true
-    },
-    "exporting": {
-      "enabled": true
-    },
-    "empty_statement": {
-      "enabled": true
-    },
-    "sequential_blank": {
+    "indentation": {
       "enabled": true,
-      "lines": 4
+      "exclude": [],
+      "ignoreExceptions": true,
+      "alignTryCatch": false,
+      "globalClassSkipFirst": false,
+      "ignoreGlobalClassDefinition": false,
+      "ignoreGlobalInterface": false
     },
-    "definitions_top": {
-      "enabled": true
-    },
-    "breakpoint": {
-      "enabled": true
-    },
-    "nesting": {
+    "inline_data_old_versions": {
       "enabled": true,
-      "depth": 5
+      "exclude": []
     },
     "keywords_upper": {
       "enabled": true,
+      "exclude": [],
+      "ignoreExceptions": true,
+      "ignoreLowerClassImplmentationStatement": true,
+      "ignoreGlobalClassDefinition": false,
+      "ignoreGlobalInterface": false,
+      "ignoreFunctionModuleName": false
+    },
+    "line_length": {
+      "enabled": true,
+      "exclude": [],
+      "length": 120
+    },
+    "line_only_punc": {
+      "enabled": true,
+      "exclude": [],
       "ignoreExceptions": true
     },
-    "cloud_types": {
-      "enabled": true
+    "local_class_naming": {
+      "enabled": true,
+      "exclude": [],
+      "local": "^LCL_.*$",
+      "test": "^LTCL_.*$"
+    },
+    "local_variable_names": {
+      "enabled": true,
+      "exclude": [],
+      "expectedData": "^L._.*$",
+      "expectedConstant": "^LC_.*$",
+      "expectedFS": "^<L._.*>$"
+    },
+    "max_one_statement": {
+      "enabled": true,
+      "exclude": []
+    },
+    "message_exists": {
+      "enabled": false,
+      "exclude": []
     },
     "method_length": {
       "enabled": true,
+      "exclude": [],
       "statements": 100
-    },
-    "mix_returning": {
-      "enabled": true
     },
     "method_parameter_names": {
       "enabled": true,
+      "exclude": [],
       "ignoreExceptions": true,
       "importing": "^I._.*$",
       "returning": "^R._.*$",
@@ -99,20 +175,112 @@
         "P_TASK"
       ]
     },
-    "inline_data_old_versions": {
-      "enabled": true
-    },
-    "local_variable_names": {
+    "mix_returning": {
       "enabled": true,
-      "expectedData": "^L._.*$",
-      "expectedConstant": "^LC_.*$",
-      "expectedFS": "^<L._.*>$"
+      "exclude": []
     },
-    "class_attribute_names": {
+    "msag_consistency": {
       "enabled": true,
-      "ignoreExceptions": true,
-      "statics": "^G._.*$",
-      "instance": "^M._.*$"
+      "exclude": []
+    },
+    "nesting": {
+      "enabled": true,
+      "exclude": [],
+      "depth": 5
+    },
+    "no_public_attributes": {
+      "enabled": true,
+      "exclude": []
+    },
+    "object_naming": {
+      "enabled": true,
+      "exclude": [],
+      "clas": "^ZC(L|X)\\_ABAPGIT\\_",
+      "intf": "^ZIF\\_ABAPGIT\\_",
+      "prog": "^ZABAPGIT",
+      "fugr": "^ZABAPGIT",
+      "tabl": "^Z",
+      "ttyp": "^Z",
+      "dtel": "^Z",
+      "doma": "^Z",
+      "msag": "^Z",
+      "tran": "^Z",
+      "enqu": "^Z",
+      "auth": "^Z",
+      "pinf": "^Z"
+    },
+    "obsolete_statement": {
+      "enabled": true,
+      "exclude": [],
+      "refresh": true,
+      "compute": true,
+      "add": true,
+      "subtract": true,
+      "multiply": true,
+      "move": true,
+      "divide": true,
+      "requested": true
+    },
+    "parser_error": {
+      "enabled": true,
+      "exclude": []
+    },
+    "preferred_compare_operator": {
+      "enabled": true,
+      "exclude": [],
+      "badOperators": [
+        "EQ",
+        "><",
+        "NE",
+        "GE",
+        "GT",
+        "LT",
+        "LE"
+      ]
+    },
+    "remove_descriptions": {
+      "enabled": true,
+      "exclude": [],
+      "ignoreExceptions": false
+    },
+    "sequential_blank": {
+      "enabled": true,
+      "exclude": [],
+      "lines": 4
+    },
+    "short_case": {
+      "enabled": true,
+      "exclude": [],
+      "length": 1,
+      "allow": ["iv_action", "sy"]
+    },
+    "space_before_colon": {
+      "enabled": true,
+      "exclude": []
+    },
+    "start_at_tab": {
+      "enabled": true,
+      "exclude": []
+    },
+    "superclass_final": {
+      "enabled": false,
+      "exclude": []
+    },
+    "tabl_enhancement_category": {
+      "enabled": true,
+      "exclude": []
+    },
+    "unreachable_code": {
+      "enabled": true,
+      "exclude": []
+    },
+    "when_others_last": {
+      "enabled": true,
+      "exclude": []
+    },
+    "whitespace_end": {
+      "enabled": true,
+      "exclude": []
     }
   }
 }

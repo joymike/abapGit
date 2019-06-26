@@ -4,7 +4,6 @@ category: reference
 order: 20
 ---
 
-
 Type   | Description   | Supported
 :------------ | :------------ | ------------:
 ACID | Checkpoint Group | Yes
@@ -47,6 +46,8 @@ ENQU | Lock Object | Yes
 ENSC | Composite Enhancement Spot | Yes
 FORM | SAPscript form | Yes
 FUGR | Function Group | Yes
+G4BA | SAP Gateway OData V4 Backend Service Group & Assigments | [#2704](https://github.com/larshp/abapGit/issues/2704)
+G4BS | SAP Gateway OData V4 Backend Service | [#2704](https://github.com/larshp/abapGit/issues/2704)
 IAMU | Language-Independent IAC Binary Data | Yes
 IARP | Parameters of IAC Language Resource | Yes
 IASP | Parameters of an IAC service | Yes
@@ -82,10 +83,10 @@ SHLP | Search Help | Yes
 SHMA | Shared Objects: Defined Area Attributes | Yes
 SICF | ICF Service | Yes
 SMIM | Info Object from the MIME Repository | Yes
-SOTS | All Concepts (OTR) of a Package - Long Texts | [#792](https://github.com/larshp/abapGit/issues/792)
+SOTS | All Concepts (OTR) of a Package - Long Texts | Yes
 SPLO | Format Types | Yes
-SPRX | Proxy Object | [#87](https://github.com/larshp/abapGit/issues/87)
-SQSC |	Database Procedure Proxy | [#2291](https://github.com/larshp/abapGit/issues/2291)
+SPRX | Proxy Object | Yes
+SQSC | Database Procedure Proxy | Yes
 SRFC | RFC Service | Yes
 SSFO | SAP Smart Form | Yes
 SSST | SAP Smart Style | Yes
@@ -115,6 +116,8 @@ WDYN | Web Dynpro Component | Yes
 WEBI | Virtual End Point | Yes
 XINX | Extension Index | Yes
 XSLT | Transformation | Yes
+
+If additional object types are required please open an [issue](https://github.com/larshp/abapGit/issues)
 
 Support for customizing planned, see [#1004](https://github.com/larshp/abapGit/issues/1004)
 

@@ -86,7 +86,7 @@ CLASS zcl_abapgit_object_form DEFINITION PUBLIC INHERITING FROM zcl_abapgit_obje
       IMPORTING
         is_text_header TYPE zcl_abapgit_object_form=>tys_text_header
       EXPORTING
-        ev_form_found  TYPE flag
+        ev_form_found  TYPE abap_bool
         es_form_data   TYPE zcl_abapgit_object_form=>tys_form_data
         et_lines       TYPE zcl_abapgit_object_form=>tyt_lines.
 
@@ -270,11 +270,6 @@ CLASS ZCL_ABAPGIT_OBJECT_FORM IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD zif_abapgit_object~compare_to_remote_version.
-    CREATE OBJECT ro_comparison_result TYPE zcl_abapgit_comparison_null.
-  ENDMETHOD.
-
-
   METHOD zif_abapgit_object~delete.
 
     CALL FUNCTION 'DELETE_FORM'
@@ -330,25 +325,20 @@ CLASS ZCL_ABAPGIT_OBJECT_FORM IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD zif_abapgit_object~get_comparator.
+    RETURN.
+  ENDMETHOD.
+
+
+  METHOD zif_abapgit_object~get_deserialize_steps.
+    APPEND zif_abapgit_object=>gc_step_id-abap TO rt_steps.
+  ENDMETHOD.
+
+
   METHOD zif_abapgit_object~get_metadata.
 
     rs_metadata = get_metadata( ).
     rs_metadata-delete_tadir = abap_true.
-
-  ENDMETHOD.
-
-
-  METHOD zif_abapgit_object~has_changed_since.
-
-    DATA: ls_last_changed    TYPE tys_form_header.
-    DATA: lv_last_changed_ts TYPE timestamp.
-
-    ls_last_changed = get_last_changes( ms_item-obj_name ).
-
-    CONVERT DATE ls_last_changed-tdldate TIME ls_last_changed-tdltime
-            INTO TIME STAMP lv_last_changed_ts TIME ZONE sy-zonlo.
-
-    rv_changed = boolc( sy-subrc <> 0 OR lv_last_changed_ts > iv_timestamp ).
 
   ENDMETHOD.
 
@@ -414,7 +404,7 @@ CLASS ZCL_ABAPGIT_OBJECT_FORM IMPLEMENTATION.
     DATA: ls_form_data              TYPE tys_form_data.
     DATA: lt_text_header            TYPE tyt_text_header.
     DATA: lt_lines                  TYPE tyt_lines.
-    DATA: lv_form_found             TYPE flag.
+    DATA: lv_form_found             TYPE abap_bool.
     FIELD-SYMBOLS: <ls_text_header> LIKE LINE OF lt_text_header.
 
     lt_text_header = find_form( ms_item-obj_name ).
@@ -533,7 +523,7 @@ CLASS ZCL_ABAPGIT_OBJECT_FORM IMPLEMENTATION.
     DATA ls_lines        LIKE LINE OF lt_lines.
     DATA ls_form_windows LIKE LINE OF ct_form_windows.
     DATA lv_elt_windows  TYPE tdformat VALUE '/W'.
-    DATA lv_firstloop    TYPE boolean.
+    DATA lv_firstloop    TYPE abap_bool.
 
     lt_lines = ct_lines.
     CLEAR ct_lines.

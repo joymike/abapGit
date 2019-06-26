@@ -138,26 +138,24 @@ CLASS ZCL_ABAPGIT_OBJECTS_ACTIVATION IMPLEMENTATION.
 
   METHOD activate_new.
 
-    DATA: lo_progress TYPE REF TO zcl_abapgit_progress.
+    DATA: li_progress TYPE REF TO zif_abapgit_progress.
 
     IF gt_objects IS INITIAL.
       RETURN.
     ENDIF.
 
-    CREATE OBJECT lo_progress
-      EXPORTING
-        iv_total = 100.
+    li_progress = zcl_abapgit_progress=>get_instance( 100 ).
 
     IF iv_ddic = abap_true.
 
-      lo_progress->show( iv_current = 98
+      li_progress->show( iv_current = 98
                          iv_text    = 'Activating DDIC' ).
 
       activate_ddic( ).
 
     ELSE.
 
-      lo_progress->show( iv_current = 98
+      li_progress->show( iv_current = 98
                          iv_text    = 'Activating non DDIC' ).
 
       activate_old( ).
@@ -258,9 +256,10 @@ CLASS ZCL_ABAPGIT_OBJECTS_ACTIVATION IMPLEMENTATION.
 
     DATA: lt_lines      TYPE STANDARD TABLE OF trlog,
           lv_logname_db TYPE ddprh-protname,
-          lo_log        TYPE REF TO zcl_abapgit_log.
+          li_log        TYPE REF TO zif_abapgit_log.
 
     FIELD-SYMBOLS: <ls_line> LIKE LINE OF lt_lines.
+
 
     lv_logname_db = iv_logname.
 
@@ -281,14 +280,15 @@ CLASS ZCL_ABAPGIT_OBJECTS_ACTIVATION IMPLEMENTATION.
 
     DELETE lt_lines WHERE severity <> 'E'.
 
-    CREATE OBJECT lo_log.
+    CREATE OBJECT li_log TYPE zcl_abapgit_log.
 
     LOOP AT lt_lines ASSIGNING <ls_line>.
-      lo_log->add( <ls_line>-line ).
+      li_log->add( <ls_line>-line ).
     ENDLOOP.
 
-    IF lo_log->count( ) > 0.
-      lo_log->show( ).
+    IF li_log->count( ) > 0.
+      zcl_abapgit_log_viewer=>show_log( iv_header_text = 'Activation Errors'
+                                        ii_log         = li_log ).
     ENDIF.
 
   ENDMETHOD.
@@ -299,16 +299,14 @@ CLASS ZCL_ABAPGIT_OBJECTS_ACTIVATION IMPLEMENTATION.
     DATA: lv_class    LIKE LINE OF gt_classes,
           lo_cross    TYPE REF TO cl_wb_crossreference,
           lv_include  TYPE programm,
-          lo_progress TYPE REF TO zcl_abapgit_progress.
+          li_progress TYPE REF TO zif_abapgit_progress.
 
 
-    CREATE OBJECT lo_progress
-      EXPORTING
-        iv_total = lines( gt_classes ).
+    li_progress = zcl_abapgit_progress=>get_instance( lines( gt_classes ) ).
 
     LOOP AT gt_classes INTO lv_class.
       IF sy-tabix MOD 20 = 0.
-        lo_progress->show(
+        li_progress->show(
           iv_current = sy-tabix
           iv_text    = 'Updating where-used lists' ).
       ENDIF.
@@ -328,19 +326,17 @@ CLASS ZCL_ABAPGIT_OBJECTS_ACTIVATION IMPLEMENTATION.
 
   METHOD use_new_activation_logic.
 
-    IF zcl_abapgit_persist_settings=>get_instance( )->read( )->get_experimental_features( ) = abap_true.
+* left for easy rollback, cleanup later
+* IF zcl_abapgit_persist_settings=>get_instance( )->read( )->get_experimental_features( ) = abap_true.
 
-      CALL FUNCTION 'FUNCTION_EXISTS'
-        EXPORTING
-          funcname           = 'DD_MASS_ACT_C3'    " Name of Function Module
-        EXCEPTIONS
-          function_not_exist = 1
-          OTHERS             = 2.
-
-      IF sy-subrc = 0.
-        rv_use_new_activation_logic = abap_true.
-      ENDIF.
-
+    CALL FUNCTION 'FUNCTION_EXISTS'
+      EXPORTING
+        funcname           = 'DD_MASS_ACT_C3'
+      EXCEPTIONS
+        function_not_exist = 1
+        OTHERS             = 2.
+    IF sy-subrc = 0.
+      rv_use_new_activation_logic = abap_true.
     ENDIF.
 
   ENDMETHOD.

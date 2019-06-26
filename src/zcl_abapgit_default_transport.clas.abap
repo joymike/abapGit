@@ -23,9 +23,15 @@ CLASS zcl_abapgit_default_transport DEFINITION
 
       reset
         RAISING
-          zcx_abapgit_exception.
+          zcx_abapgit_exception,
+      get
+        RETURNING
+          VALUE(rs_default_task) TYPE e070use
+        RAISING
+          zcx_abapgit_exception .
 
 
+  PROTECTED SECTION.
   PRIVATE SECTION.
 
     CLASS-DATA go_instance TYPE REF TO zcl_abapgit_default_transport .
@@ -36,11 +42,6 @@ CLASS zcl_abapgit_default_transport DEFINITION
       RAISING
         zcx_abapgit_exception .
     METHODS restore
-      RAISING
-        zcx_abapgit_exception .
-    METHODS get
-      RETURNING
-        VALUE(rs_default_task) TYPE e070use
       RAISING
         zcx_abapgit_exception .
     METHODS set_internal
@@ -75,7 +76,7 @@ CLASS ZCL_ABAPGIT_DEFAULT_TRANSPORT IMPLEMENTATION.
         OTHERS           = 4.
 
     IF sy-subrc <> 0.
-      zcx_abapgit_exception=>raise( |Error from TR_TASK_RESET { sy-subrc }| ).
+      zcx_abapgit_exception=>raise( |Error from TR_TASK_RESET. Subrc = { sy-subrc }| ).
     ENDIF.
 
   ENDMETHOD.
@@ -102,7 +103,7 @@ CLASS ZCL_ABAPGIT_DEFAULT_TRANSPORT IMPLEMENTATION.
         OTHERS           = 4.
 
     IF sy-subrc <> 0.
-      zcx_abapgit_exception=>raise( |Error from TR_TASK_GET { sy-subrc }| ).
+      zcx_abapgit_exception=>raise( |Error from TR_TASK_GET. Subrc = { sy-subrc }| ).
     ENDIF.
 
     READ TABLE lt_e070use INTO rs_default_task
@@ -169,7 +170,7 @@ CLASS ZCL_ABAPGIT_DEFAULT_TRANSPORT IMPLEMENTATION.
         OTHERS            = 7.
 
     IF sy-subrc <> 0.
-      zcx_abapgit_exception=>raise( |Error from TR_TASK_SET { sy-subrc }| ).
+      zcx_abapgit_exception=>raise( |Error from TR_TASK_SET. Subrc = { sy-subrc }| ).
     ENDIF.
 
   ENDMETHOD.
@@ -203,7 +204,6 @@ CLASS ZCL_ABAPGIT_DEFAULT_TRANSPORT IMPLEMENTATION.
     CALL FUNCTION 'TR_TASK_SET'
       EXPORTING
         iv_order          = iv_transport
-*       iv_task           = iv_task
       EXCEPTIONS
         invalid_username  = 1
         invalid_category  = 2
@@ -214,7 +214,7 @@ CLASS ZCL_ABAPGIT_DEFAULT_TRANSPORT IMPLEMENTATION.
         OTHERS            = 7.
 
     IF sy-subrc <> 0.
-      zcx_abapgit_exception=>raise( |Error from TR_TASK_SET { sy-subrc }| ).
+      zcx_abapgit_exception=>raise( |Error from TR_TASK_SET. Subrc = { sy-subrc }| ).
     ENDIF.
 
   ENDMETHOD.

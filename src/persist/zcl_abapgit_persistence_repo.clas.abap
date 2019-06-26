@@ -1,7 +1,6 @@
 CLASS zcl_abapgit_persistence_repo DEFINITION
   PUBLIC
   CREATE PROTECTED
-
   GLOBAL FRIENDS zcl_abapgit_persist_factory .
 
   PUBLIC SECTION.
@@ -42,6 +41,7 @@ ENDCLASS.
 
 
 CLASS ZCL_ABAPGIT_PERSISTENCE_REPO IMPLEMENTATION.
+
 
   METHOD constructor.
 
@@ -150,6 +150,8 @@ CLASS ZCL_ABAPGIT_PERSISTENCE_REPO IMPLEMENTATION.
     GET TIME STAMP FIELD ls_repo-created_at.
     ls_repo-dot_abapgit  = is_dot_abapgit.
 
+    ls_repo-local_settings-display_name = iv_display_name.
+
     lv_repo_as_xml = to_xml( ls_repo ).
 
     rv_key = get_next_id( ).
@@ -185,6 +187,10 @@ CLASS ZCL_ABAPGIT_PERSISTENCE_REPO IMPLEMENTATION.
 
     LOOP AT lt_content INTO ls_content.
       MOVE-CORRESPONDING from_xml( ls_content-data_str ) TO ls_repo.
+      IF ls_repo-local_settings-write_protected = abap_false AND
+         zcl_abapgit_environment=>is_repo_object_changes_allowed( ) = abap_false.
+        ls_repo-local_settings-write_protected = abap_true.
+      ENDIF.
       ls_repo-key = ls_content-value.
       INSERT ls_repo INTO TABLE rt_repos.
     ENDLOOP.
@@ -214,15 +220,16 @@ CLASS ZCL_ABAPGIT_PERSISTENCE_REPO IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD zif_abapgit_persist_repo~update_metadata.
 
     DATA:
-          lv_blob            TYPE zif_abapgit_persistence=>ty_content-data_str,
-          ls_persistent_meta TYPE zif_abapgit_persistence=>ty_repo.
+      lv_blob            TYPE zif_abapgit_persistence=>ty_content-data_str,
+      ls_persistent_meta TYPE zif_abapgit_persistence=>ty_repo.
 
     FIELD-SYMBOLS <lv_field>   LIKE LINE OF mt_meta_fields.
-    FIELD-SYMBOLS <lv_dst>     TYPE ANY.
-    FIELD-SYMBOLS <lv_src>     TYPE ANY.
+    FIELD-SYMBOLS <lv_dst>     TYPE any.
+    FIELD-SYMBOLS <lv_src>     TYPE any.
     FIELD-SYMBOLS <lv_changed> TYPE abap_bool.
 
     ASSERT NOT iv_key IS INITIAL.
@@ -261,5 +268,4 @@ CLASS ZCL_ABAPGIT_PERSISTENCE_REPO IMPLEMENTATION.
                    iv_data  = lv_blob ).
 
   ENDMETHOD.
-
 ENDCLASS.

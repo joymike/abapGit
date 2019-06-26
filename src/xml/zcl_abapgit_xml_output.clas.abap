@@ -1,7 +1,7 @@
 CLASS zcl_abapgit_xml_output DEFINITION
   PUBLIC
   INHERITING FROM zcl_abapgit_xml
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
@@ -18,19 +18,20 @@ CLASS zcl_abapgit_xml_output DEFINITION
       IMPORTING
         !iv_name TYPE clike
         !ii_xml  TYPE REF TO if_ixml_element .
-    METHODS build_asx_node
-      RETURNING
-        VALUE(ri_element) TYPE REF TO if_ixml_element .
     METHODS render
       IMPORTING
-        !iv_normalize TYPE sap_bool DEFAULT abap_true
+        !iv_normalize TYPE abap_bool DEFAULT abap_true
         !is_metadata  TYPE zif_abapgit_definitions=>ty_metadata OPTIONAL
       RETURNING
         VALUE(rv_xml) TYPE string .
   PROTECTED SECTION.
   PRIVATE SECTION.
-    DATA: mi_raw  TYPE REF TO if_ixml_element.
 
+    DATA mi_raw TYPE REF TO if_ixml_element .
+
+    METHODS build_asx_node
+      RETURNING
+        VALUE(ri_element) TYPE REF TO if_ixml_element .
 ENDCLASS.
 
 

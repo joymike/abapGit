@@ -10,16 +10,6 @@ FORM run.
   DATA: lx_exception TYPE REF TO zcx_abapgit_exception,
         lv_ind       TYPE t000-ccnocliind.
 
-
-  SELECT SINGLE ccnocliind FROM t000 INTO lv_ind
-    WHERE mandt = sy-mandt.
-  IF sy-subrc = 0
-      AND lv_ind <> ' '
-      AND lv_ind <> '1'. " check changes allowed
-    WRITE: / 'Wrong client, changes to repository objects not allowed'. "#EC NOTEXT
-    RETURN.
-  ENDIF.
-
   TRY.
       zcl_abapgit_migrations=>run( ).
       PERFORM open_gui.
@@ -126,11 +116,18 @@ FORM output.
 ENDFORM.
 
 FORM exit RAISING zcx_abapgit_exception.
+  DATA li_page TYPE REF TO zif_abapgit_gui_renderable.
   CASE sy-ucomm.
     WHEN 'CBAC'.  "Back
-      IF zcl_abapgit_ui_factory=>get_gui( )->back( ) IS INITIAL.
+      IF zcl_abapgit_ui_factory=>get_gui( )->back( ) = abap_true. " end of stack
+        zcl_abapgit_ui_factory=>get_gui( )->free( ). " Graceful shutdown
+      ELSE.
         LEAVE TO SCREEN 1001.
       ENDIF.
+    WHEN 'CEND'.
+      CREATE OBJECT li_page TYPE zcl_abapgit_gui_page_main.
+      zcl_abapgit_ui_factory=>get_gui( )->go_page( li_page ).
+      LEAVE TO SCREEN 1001.
   ENDCASE.
 ENDFORM.
 

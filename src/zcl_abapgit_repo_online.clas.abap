@@ -39,14 +39,15 @@ CLASS zcl_abapgit_repo_online DEFINITION
         VALUE(rt_objects) TYPE zif_abapgit_definitions=>ty_objects_tt
       RAISING
         zcx_abapgit_exception .
+
     METHODS get_files_remote
-      REDEFINITION .
+        REDEFINITION .
     METHODS get_name
-      REDEFINITION .
-    METHODS rebuild_local_checksums
-      REDEFINITION .
+        REDEFINITION .
     METHODS has_remote_source
-      REDEFINITION .
+        REDEFINITION .
+    METHODS rebuild_local_checksums
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -75,19 +76,16 @@ CLASS ZCL_ABAPGIT_REPO_ONLINE IMPLEMENTATION.
 
   METHOD fetch_remote.
 
-    DATA: lo_progress TYPE REF TO zcl_abapgit_progress,
+    DATA: li_progress TYPE REF TO zif_abapgit_progress,
           ls_pull     TYPE zcl_abapgit_git_porcelain=>ty_pull_result.
 
     IF mv_request_remote_refresh = abap_false.
       RETURN.
     ENDIF.
 
-    CREATE OBJECT lo_progress
-      EXPORTING
-        iv_total = 1.
+    li_progress = zcl_abapgit_progress=>get_instance( 1 ).
 
-
-    lo_progress->show( iv_current = 1
+    li_progress->show( iv_current = 1
                        iv_text    = 'Fetch remote files' ) ##NO_TEXT.
 
     ls_pull = zcl_abapgit_git_porcelain=>pull(
@@ -114,7 +112,11 @@ CLASS ZCL_ABAPGIT_REPO_ONLINE IMPLEMENTATION.
 
   METHOD get_name.
     rv_name = zcl_abapgit_url=>name( ms_data-url ).
-    rv_name = cl_http_utility=>if_http_utility~unescape_url( rv_name ).
+    rv_name = super->get_name( ).
+    IF rv_name IS INITIAL.
+      rv_name = zcl_abapgit_url=>name( ms_data-url ).
+      rv_name = cl_http_utility=>if_http_utility~unescape_url( rv_name ).
+    ENDIF.
   ENDMETHOD.
 
 
@@ -182,16 +184,16 @@ CLASS ZCL_ABAPGIT_REPO_ONLINE IMPLEMENTATION.
     " TODO: method unify to base class !
 
     DATA:
-          lt_remote    TYPE zif_abapgit_definitions=>ty_files_tt,
-          lt_local     TYPE zif_abapgit_definitions=>ty_files_item_tt,
-          ls_last_item TYPE zif_abapgit_definitions=>ty_item,
-          lt_checksums TYPE zif_abapgit_persistence=>ty_local_checksum_tt.
+      lt_remote    TYPE zif_abapgit_definitions=>ty_files_tt,
+      lt_local     TYPE zif_abapgit_definitions=>ty_files_item_tt,
+      ls_last_item TYPE zif_abapgit_definitions=>ty_item,
+      lt_checksums TYPE zif_abapgit_persistence=>ty_local_checksum_tt.
 
     FIELD-SYMBOLS:
-                   <ls_checksum> LIKE LINE OF lt_checksums,
-                   <ls_file_sig> LIKE LINE OF <ls_checksum>-files,
-                   <ls_remote>   LIKE LINE OF lt_remote,
-                   <ls_local>    LIKE LINE OF lt_local.
+      <ls_checksum> LIKE LINE OF lt_checksums,
+      <ls_file_sig> LIKE LINE OF <ls_checksum>-files,
+      <ls_remote>   LIKE LINE OF lt_remote,
+      <ls_local>    LIKE LINE OF lt_local.
 
     lt_local  = get_files_local( ).
 
@@ -235,10 +237,6 @@ CLASS ZCL_ABAPGIT_REPO_ONLINE IMPLEMENTATION.
 
   METHOD set_branch_name.
 
-    IF ms_data-local_settings-write_protected = abap_true.
-      zcx_abapgit_exception=>raise( 'Cannot switch branch. Local code is write-protected by repo config' ).
-    ENDIF.
-
     reset_remote( ).
     set( iv_branch_name = iv_branch_name ).
 
@@ -251,10 +249,6 @@ CLASS ZCL_ABAPGIT_REPO_ONLINE IMPLEMENTATION.
 
 
   METHOD set_url.
-
-    IF ms_data-local_settings-write_protected = abap_true.
-      zcx_abapgit_exception=>raise( 'Cannot change URL. Local code is write-protected by repo config' ).
-    ENDIF.
 
     reset_remote( ).
     set( iv_url = iv_url ).
@@ -300,7 +294,8 @@ CLASS ZCL_ABAPGIT_REPO_ONLINE IMPLEMENTATION.
     ENDIF.
 
     IF ms_data-local_settings-block_commit = abap_true
-        AND mv_code_inspector_successful = abap_false.
+        AND zcl_abapgit_factory=>get_code_inspector( get_package( )
+          )->is_successful( ) = abap_false.
       zcx_abapgit_exception=>raise( |A successful code inspection is required| ).
     ENDIF.
 
@@ -322,7 +317,6 @@ CLASS ZCL_ABAPGIT_REPO_ONLINE IMPLEMENTATION.
     update_local_checksums( ls_push-updated_files ).
 
     reset_status( ).
-    CLEAR: mv_code_inspector_successful.
 
   ENDMETHOD.
 ENDCLASS.
